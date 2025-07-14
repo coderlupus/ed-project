@@ -6,9 +6,9 @@ gcc arvore_avl.c -o arvore_avl
 gcc tabela_hash.c -o tabela_hash
 
 Como executar:
-./arvore_binaria
-./arvore_avl
-./tabela_hash
+./arvore_binaria.exe
+./arvore_avl.exe
+./tabela_hash.exe
 
 Os tempos são salvos em arquivos .dat na pasta graficos.
 Os gráficos são gerados com:

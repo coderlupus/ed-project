@@ -2,22 +2,26 @@
 #include <stdlib.h>
 #include <time.h>
 
-typedef struct Node {
+typedef struct Node
+{
     int valor, altura;
     struct Node *esq, *dir;
 } Node;
 
-int altura(Node* n) {
+int altura(Node *n)
+{
     return n ? n->altura : 0;
 }
 
-int max(int a, int b) {
+int max(int a, int b)
+{
     return a > b ? a : b;
 }
 
-Node* rot_dir(Node* y) {
-    Node* x = y->esq;
-    Node* T2 = x->dir;
+Node *rot_dir(Node *y)
+{
+    Node *x = y->esq;
+    Node *T2 = x->dir;
     x->dir = y;
     y->esq = T2;
     y->altura = max(altura(y->esq), altura(y->dir)) + 1;
@@ -25,9 +29,10 @@ Node* rot_dir(Node* y) {
     return x;
 }
 
-Node* rot_esq(Node* x) {
-    Node* y = x->dir;
-    Node* T2 = y->esq;
+Node *rot_esq(Node *x)
+{
+    Node *y = x->dir;
+    Node *T2 = y->esq;
     y->esq = x;
     x->dir = T2;
     x->altura = max(altura(x->esq), altura(x->dir)) + 1;
@@ -35,13 +40,16 @@ Node* rot_esq(Node* x) {
     return y;
 }
 
-int get_balance(Node* n) {
+int get_balance(Node *n)
+{
     return n ? altura(n->esq) - altura(n->dir) : 0;
 }
 
-Node* inserir(Node* node, int valor) {
-    if (!node) {
-        Node* novo = malloc(sizeof(Node));
+Node *inserir(Node *node, int valor)
+{
+    if (!node)
+    {
+        Node *novo = malloc(sizeof(Node));
         novo->valor = valor;
         novo->esq = novo->dir = NULL;
         novo->altura = 1;
@@ -64,12 +72,14 @@ Node* inserir(Node* node, int valor) {
     if (balance < -1 && valor > node->dir->valor)
         return rot_esq(node);
 
-    if (balance > 1 && valor > node->esq->valor) {
+    if (balance > 1 && valor > node->esq->valor)
+    {
         node->esq = rot_esq(node->esq);
         return rot_dir(node);
     }
 
-    if (balance < -1 && valor < node->dir->valor) {
+    if (balance < -1 && valor < node->dir->valor)
+    {
         node->dir = rot_dir(node->dir);
         return rot_esq(node);
     }
@@ -77,21 +87,26 @@ Node* inserir(Node* node, int valor) {
     return node;
 }
 
-int buscar(Node* raiz, int valor) {
-    if (raiz == NULL) return 0;
-    if (raiz->valor == valor) return 1;
+int buscar(Node *raiz, int valor)
+{
+    if (raiz == NULL)
+        return 0;
+    if (raiz->valor == valor)
+        return 1;
     if (valor < raiz->valor)
         return buscar(raiz->esq, valor);
     else
         return buscar(raiz->dir, valor);
 }
 
-int main() {
-    Node* raiz = NULL;
+int main()
+{
+    Node *raiz = NULL;
     int N[] = {10000, 50000, 100000};
-    FILE* f = fopen("graficos/tempos_avl.dat", "w");
+    FILE *f = fopen("graficos/tempos_avl.dat", "w");
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         srand(42);
         raiz = NULL;
 
@@ -101,11 +116,17 @@ int main() {
         srand(time(NULL));
         int chave = rand();
 
+        int repeticoes = 10000000; 
+
         clock_t ini = clock();
-        buscar(raiz, chave);
+        for (int k = 0; k < repeticoes; k++)
+        {
+            buscar(raiz, chave);
+        }
         clock_t fim = clock();
 
-        double tempo = (double)(fim - ini) / CLOCKS_PER_SEC;
+        double tempo = (double)(fim - ini) / CLOCKS_PER_SEC; // tempo total
+
         fprintf(f, "%d\t%lf\n", N[i], tempo);
         printf("AVL: N=%d Tempo=%lf\n", N[i], tempo);
     }

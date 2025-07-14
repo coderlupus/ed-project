@@ -2,14 +2,17 @@
 #include <stdlib.h>
 #include <time.h>
 
-typedef struct Node {
+typedef struct Node
+{
     int valor;
     struct Node *esq, *dir;
 } Node;
 
-Node* inserir(Node* raiz, int valor) {
-    if (raiz == NULL) {
-        Node* novo = malloc(sizeof(Node));
+Node *inserir(Node *raiz, int valor)
+{
+    if (raiz == NULL)
+    {
+        Node *novo = malloc(sizeof(Node));
         novo->valor = valor;
         novo->esq = novo->dir = NULL;
         return novo;
@@ -21,21 +24,26 @@ Node* inserir(Node* raiz, int valor) {
     return raiz;
 }
 
-int buscar(Node* raiz, int valor) {
-    if (raiz == NULL) return 0;
-    if (raiz->valor == valor) return 1;
+int buscar(Node *raiz, int valor)
+{
+    if (raiz == NULL)
+        return 0;
+    if (raiz->valor == valor)
+        return 1;
     if (valor < raiz->valor)
         return buscar(raiz->esq, valor);
     else
         return buscar(raiz->dir, valor);
 }
 
-int main() {
-    Node* raiz = NULL;
+int main()
+{
+    Node *raiz = NULL;
     int N[] = {10000, 50000, 100000};
-    FILE* f = fopen("graficos/tempos_binaria.dat", "w");
+    FILE *f = fopen("graficos/tempos_binaria.dat", "w");
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         srand(42);
         raiz = NULL;
 
@@ -45,11 +53,17 @@ int main() {
         srand(time(NULL));
         int chave = rand();
 
+        int repeticoes = 10000000; 
+
         clock_t ini = clock();
-        buscar(raiz, chave);
+        for (int k = 0; k < repeticoes; k++)
+        {
+            buscar(raiz, chave);
+        }
         clock_t fim = clock();
 
-        double tempo = (double)(fim - ini) / CLOCKS_PER_SEC;
+        double tempo = (double)(fim - ini) / CLOCKS_PER_SEC; // tempo total
+
         fprintf(f, "%d\t%lf\n", N[i], tempo);
         printf("BST: N=%d Tempo=%lf\n", N[i], tempo);
     }
