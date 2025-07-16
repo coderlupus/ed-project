@@ -99,6 +99,46 @@ int buscar(Node *raiz, int valor)
         return buscar(raiz->dir, valor);
 }
 
+// Gera vetor crescente (pior caso para BST, mas AVL sempre balanceia)
+void gerar_crescente(int *vet, int n)
+{
+    for (int i = 0; i < n; i++)
+        vet[i] = i;
+}
+
+// Gera vetor decrescente
+void gerar_decrescente(int *vet, int n)
+{
+    for (int i = 0; i < n; i++)
+        vet[i] = n - i;
+}
+
+// Gera vetor aleatório
+void gerar_aleatorio(int *vet, int n)
+{
+    for (int i = 0; i < n; i++)
+        vet[i] = rand();
+}
+
+// Busca melhor caso (raiz)
+int buscar_melhor(Node *raiz)
+{
+    return buscar(raiz, raiz->valor);
+}
+
+// Busca pior caso (valor inexistente)
+int buscar_pior(Node *raiz)
+{
+    return buscar(raiz, -1); // valor que não existe
+}
+
+// Busca médio caso (valor aleatório)
+int buscar_medio(Node *raiz, int *vet, int n)
+{
+    int idx = rand() % n;
+    return buscar(raiz, vet[idx]);
+}
+
 int main()
 {
     Node *raiz = NULL;
@@ -107,28 +147,33 @@ int main()
 
     for (int i = 0; i < 3; i++)
     {
-        srand(42);
+        int *vet = malloc(N[i] * sizeof(int));
+        // Escolha o cenário de inserção:
+        // gerar_crescente(vet, N[i]);
+        // gerar_decrescente(vet, N[i]);
+        gerar_aleatorio(vet, N[i]);
+
         raiz = NULL;
-
         for (int j = 0; j < N[i]; j++)
-            raiz = inserir(raiz, rand());
+            raiz = inserir(raiz, vet[j]);
 
-        srand(time(NULL));
-        int chave = rand();
+        int repeticoes = 100000;
 
-        int repeticoes = 10000000; 
-
+        // Escolha o cenário de busca:
         clock_t ini = clock();
         for (int k = 0; k < repeticoes; k++)
         {
-            buscar(raiz, chave);
+            // buscar_melhor(raiz);
+            // buscar_pior(raiz);
+            buscar_medio(raiz, vet, N[i]);
         }
         clock_t fim = clock();
 
-        double tempo = (double)(fim - ini) / CLOCKS_PER_SEC; // tempo total
-
+        double tempo = (double)(fim - ini) / CLOCKS_PER_SEC;
         fprintf(f, "%d\t%lf\n", N[i], tempo);
         printf("AVL: N=%d Tempo=%lf\n", N[i], tempo);
+
+        free(vet);
     }
     fclose(f);
     return 0;
