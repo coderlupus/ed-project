@@ -34,6 +34,27 @@ int buscar(int valor)
     return 0;
 }
 
+// Gera vetor de chaves aleatórias
+void gerar_aleatorio(int *vet, int n) {
+    for (int i = 0; i < n; i++) vet[i] = rand();
+}
+
+// Busca melhor caso: chave está logo no início da lista (primeira inserida)
+int buscar_melhor(int *vet) {
+    return buscar(vet[0]);
+}
+
+// Busca pior caso: chave que não existe
+int buscar_pior() {
+    return buscar(-1);
+}
+
+// Busca médio caso: chave aleatória do vetor
+int buscar_medio(int *vet, int n) {
+    int idx = rand() % n;
+    return buscar(vet[idx]);
+}
+
 int main()
 {
     int N[] = {10000, 50000, 100000};
@@ -45,18 +66,21 @@ int main()
         for (int j = 0; j < TAM; j++)
             tabela[j] = NULL;
 
+        int *vet = malloc(N[i] * sizeof(int));
+        gerar_aleatorio(vet, N[i]);
+
         for (int j = 0; j < N[i]; j++)
-            inserir(rand());
+            inserir(vet[j]);
 
-        srand(time(NULL));
-        int chave = rand();
+        int repeticoes = 10000000;
 
-        int repeticoes = 10000000; 
-
+        // Escolha o cenário de busca:
         clock_t ini = clock();
         for (int k = 0; k < repeticoes; k++)
         {
-            buscar(chave);
+            // buscar_melhor(vet);
+            // buscar_pior();
+            buscar_medio(vet, N[i]);
         }
         clock_t fim = clock();
 
@@ -64,6 +88,8 @@ int main()
 
         fprintf(f, "%d\t%lf\n", N[i], tempo);
         printf("HASH: N=%d Tempo=%lf\n", N[i], tempo);
+
+        free(vet);
     }
     fclose(f);
     return 0;
